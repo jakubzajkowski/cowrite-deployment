@@ -1,0 +1,30 @@
+# Pliki środowiskowe zawierające hasła
+.env*
+*.secret
+
+# Certyfikaty SSL prywatne
+nginx/ssl/*.key
+nginx/ssl/*.crt
+
+# Logi i tymczasowe pliki
+*.log
+tmp/
+*.pid
+
+# Docker i obrazy
+**/Dockerfile.*.swp
+docker-compose.override.yml  # jeśli lokalny override
+**/build/
+**/target/
+
+# System / IDE
+.DS_Store
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Node/npm jeśli używasz frontend w deployment repo
+node_modules/
+package-lock.json
