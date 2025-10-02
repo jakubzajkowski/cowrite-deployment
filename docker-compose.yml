@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   app:
-    image: jakubzajkowski/cowrite-user-service:1.0
+    image: jakubzajkowski/cowrite-user-service:latest
     container_name: cowrite-app
     ports:
       - "8080:8080"
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: jakubzajkowski/cowrite-web:1.0
+    image: jakubzajkowski/cowrite-web:latest
     container_name: cowrite-web
     ports:
       - "3000:80"
