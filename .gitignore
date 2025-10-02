@@ -1,5 +1,7 @@
 # Pliki środowiskowe zawierające hasła
-.env*
+.env
+.env.local
+.env.*.local
 *.secret
 
 # Certyfikaty SSL prywatne
