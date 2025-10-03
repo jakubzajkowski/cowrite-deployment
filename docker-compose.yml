@@ -19,6 +19,13 @@ services:
       - db
     restart: unless-stopped
 
+  ai:
+    image: jakubzajkowski/cowrite-ai-service:latest
+    container_name: cowrite-ai
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    
   db:
     image: postgres:15
     container_name: cowrite-db
