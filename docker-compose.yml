@@ -24,6 +24,11 @@ services:
     container_name: cowrite-ai
     ports:
       - "8000:8000"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      USER_COOKIE_NAME: ${USER_COOKIE_NAME}
+      DATABASE_URL: ${DATABASE_URL}
     restart: unless-stopped
     
   db:
