@@ -7,9 +7,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: ${APP_DATABASE_URL}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       JWT_COOKIE_NAME: ${JWT_COOKIE_NAME}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
@@ -25,23 +25,25 @@ services:
     ports:
       - "8000:8000"
     environment:
+      DATABASE_URL: ${AI_DATABASE_URL}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       USER_SERVICE_URL: ${USER_SERVICE_URL}
       USER_COOKIE_NAME: ${USER_COOKIE_NAME}
-      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
     restart: unless-stopped
-    
+
   db:
     image: postgres:15
     container_name: cowrite-db
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
   frontend:
@@ -54,6 +56,7 @@ services:
     depends_on:
       - app
     restart: unless-stopped
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -75,6 +78,7 @@ services:
     depends_on:
       - prometheus
     restart: unless-stopped
+
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
