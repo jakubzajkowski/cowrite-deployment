@@ -4,8 +4,6 @@ services:
   app:
     image: jakubzajkowski/cowrite-user-service:latest
     container_name: cowrite-app
-    ports:
-      - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: ${APP_DATABASE_URL}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
@@ -17,20 +15,24 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     depends_on:
       - db
+    networks:
+      - internal
     restart: unless-stopped
 
   ai:
     image: jakubzajkowski/cowrite-ai-service:latest
     container_name: cowrite-ai
-    ports:
-      - "8000:8000"
     environment:
       DATABASE_URL: ${AI_DATABASE_URL}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
-      USER_SERVICE_URL: ${USER_SERVICE_URL}
       USER_COOKIE_NAME: ${USER_COOKIE_NAME}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
     depends_on:
       - db
+      - app
+    networks:
+      - internal
+      - public
     restart: unless-stopped
 
   db:
@@ -39,11 +41,11 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - internal
     restart: unless-stopped
 
   frontend:
@@ -55,6 +57,10 @@ services:
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app
+      - ai
+    networks:
+      - internal
+      - public
     restart: unless-stopped
 
   prometheus:
@@ -62,10 +68,10 @@ services:
     container_name: prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports:
-      - "9090:9090"
     depends_on:
       - app
+    networks:
+      - internal
     restart: unless-stopped
 
   grafana:
@@ -77,15 +83,25 @@ services:
       - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
+    networks:
+      - internal
+      - public
     restart: unless-stopped
 
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    ports:
-      - "9100:9100"
+    networks:
+      - internal
     restart: unless-stopped
 
 volumes:
   db_data:
   grafana_data:
+
+networks:
+  internal:
+    driver: bridge
+    internal: true
+  public:
+    driver: bridge
