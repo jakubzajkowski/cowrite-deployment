@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 *.secret
+nginx/.htpasswd
 
 # Certyfikaty SSL prywatne
 nginx/ssl/*.key
