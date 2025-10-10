@@ -14,6 +14,8 @@ services:
       SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     mem_limit: 512m
+    depends_on:
+      - postgres
     cpus: 0.5
     networks:
       - public
@@ -32,6 +34,7 @@ services:
     cpus: 0.5
     depends_on:
       - app
+      - postgres
     networks:
       - internal
       - public
@@ -77,9 +80,25 @@ services:
       - internal
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
 networks:
   internal:
     driver: bridge
     internal: true
   public:
     driver: bridge
+
+volumes:
+  postgres_data:
