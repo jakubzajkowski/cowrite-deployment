@@ -1,11 +1,10 @@
 # Co-Write Deployment
 
 ![Docker](https://img.shields.io/badge/docker-compose-blue.svg)
-![Azure](https://img.shields.io/badge/cloud-Azure-0078D4.svg)
 
 ## Overview
 
-Co-Write is a modern, AI-powered collaborative note-taking application designed for teams and individuals who want to enhance their productivity with intelligent assistance. This repository contains the production deployment configuration for the Co-Write application stack, orchestrated using Docker Compose and deployed on Azure infrastructure.
+Co-Write is a modern, AI-powered collaborative note-taking application designed for teams and individuals who want to enhance their productivity with intelligent assistance. This repository contains the production deployment configuration for the Co-Write application stack, orchestrated using Docker Compose and will be deployed on Azure infrastructure in the future.
 
 ## What is Co-Write?
 
@@ -76,6 +75,11 @@ Here are some preview images of the CoWrite Web application:
 - **Container**: `node-exporter`
 - **Description**: Exports system-level metrics (CPU, memory, disk, network) for Prometheus to scrape.
 
+### 8. **Postgres**
+- **Container**: `postgres`
+- **Port**: `5432` (internal)
+- **Description**: Basic database if we don't have in cloud.
+
 ## Prerequisites
 
 - Docker Engine 20.10+
@@ -127,7 +131,7 @@ Here are some preview images of the CoWrite Web application:
    ```
 
 5. **Initialize database**:
-   - Ensure your Azure PostgreSQL instance is running
+   - Ensure your Azure PostgreSQL instance is running or use default in compose
    - Update connection strings in `.env` file
    - Initial database schemas will be created automatically via migrations
 
