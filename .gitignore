@@ -5,6 +5,14 @@
 *.secret
 nginx/.htpasswd
 
+# Kubernetes secrets - DO NOT COMMIT
+k8s/secrets.yaml
+k8s/nginx-htpasswd-secret.yaml
+
+# Keep example files (explicitly allowed)
+!k8s/secrets.yaml.example
+!k8s/nginx-htpasswd-secret.yaml.example
+
 # Certyfikaty SSL prywatne
 nginx/ssl/*.key
 nginx/ssl/*.crt

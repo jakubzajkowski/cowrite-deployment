@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai
+  namespace: cowrite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cowrite-ai
+  template:
+    metadata:
+      labels:
+        app: cowrite-ai
+    spec:
+      containers:
+      - name: ai
+        image: jakubzajkowski/cowrite-ai-service:latest
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: cowrite-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cowrite-secrets
+              key: postgres-password
+        - name: DATABASE_URL
+          value: "postgresql+asyncpg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/ai_db"
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cowrite-secrets
+              key: gemini-api-key
+        - name: USER_COOKIE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: cowrite-config
+              key: USER_COOKIE_NAME
+        - name: USER_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cowrite-config
+              key: USER_SERVICE_URL
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai
+  namespace: cowrite
+spec:
+  selector:
+    app: cowrite-ai
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP

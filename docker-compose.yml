@@ -13,12 +13,29 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      # Redis env
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD}
     mem_limit: 512m
     depends_on:
       - postgres
+      - redis
     cpus: 0.5
     networks:
       - public
+      - internal
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    networks:
       - internal
     restart: unless-stopped
 

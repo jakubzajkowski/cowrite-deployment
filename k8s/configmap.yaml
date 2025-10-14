@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cowrite-config
+  namespace: cowrite
+data:
+  APP_DATABASE_URL: "jdbc:postgresql://postgres:5432/app_db"
+  JWT_COOKIE_NAME: "COWRITE_SESSION_ID"
+  JWT_EXPIRATION: "3600000"
+  SPRING_APPLICATION_NAME: "cowrite"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "none"
+  USER_COOKIE_NAME: "COWRITE_SESSION_ID"
+  USER_SERVICE_URL: "http://app:8080"

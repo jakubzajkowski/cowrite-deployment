@@ -1,0 +1,7 @@
+# Ignore actual secrets files - DO NOT COMMIT THESE
+secrets.yaml
+nginx-htpasswd-secret.yaml
+
+# Keep example files
+!secrets.yaml.example
+!nginx-htpasswd-secret.yaml.example

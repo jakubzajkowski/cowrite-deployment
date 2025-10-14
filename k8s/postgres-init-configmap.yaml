@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: cowrite
+data:
+  init.sql: |
+    CREATE DATABASE app_db;
+    CREATE DATABASE ai_db;

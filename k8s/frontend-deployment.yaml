@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: cowrite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cowrite-web
+  template:
+    metadata:
+      labels:
+        app: cowrite-web
+    spec:
+      containers:
+      - name: frontend
+        image: jakubzajkowski/cowrite-web:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        - name: htpasswd
+          mountPath: /etc/nginx/.htpasswd
+          subPath: .htpasswd
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+      - name: htpasswd
+        secret:
+          secretName: nginx-htpasswd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: cowrite
+spec:
+  selector:
+    app: cowrite-web
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30080
+  type: NodePort
